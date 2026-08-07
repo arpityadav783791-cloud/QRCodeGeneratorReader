@@ -18,4 +18,7 @@ abstract class AppRoutes {
   static const contactGenerator = '/contact-generator';
   static const locationGenerator = '/location-generator';
   static const qrPreview = '/qr-preview';
+
+  // Scanner
+  static const scanResult = '/scan-result';
 }
