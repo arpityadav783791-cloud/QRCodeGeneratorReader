@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
 import 'package:qr_code_generator_reader/app/theme/app_colors.dart';
+import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
 
 import '../controllers/wifi_generator_controller.dart';
 import '../widgets/base_generator_screen.dart';
@@ -20,12 +21,17 @@ class WifiGeneratorScreen extends GetView<WifiGeneratorController> {
       onClear: controller.clear,
 
       onCustomize: () {
-        Get.snackbar("Coming Soon", "QR customization will be available soon.");
+        AppSnackbar.show(
+          title: "Coming Soon", 
+          message: "QR customization will be available soon."
+        );
       },
 
       onContinue: () {
         if (controller.ssidController.text.trim().isEmpty) {
-          Get.snackbar("Empty SSID", "Please enter your WiFi name.");
+          AppSnackbar.show(
+            title: "Empty SSID", 
+            message: "Please enter your WiFi name.");
           return;
         }
 

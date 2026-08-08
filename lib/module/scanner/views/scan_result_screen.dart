@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_code_generator_reader/app/theme/app_colors.dart';
 import 'package:qr_code_generator_reader/app/theme/app_text_styles.dart';
+import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
+import 'package:qr_code_generator_reader/module/scanner/controllers/scan_result_type.dart';
 import 'package:qr_code_generator_reader/module/scanner/controllers/scanner_controller.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ScanResultScreen extends GetView<ScannerController>{
   const ScanResultScreen({super.key});
@@ -49,13 +53,40 @@ class ScanResultScreen extends GetView<ScannerController>{
               ),
               const Spacer(),
 
+              Obx(
+                () {
+                  if(controller.resultType.value != ScanResultType.url){
+                    return const SizedBox.shrink();
+                  }
+                  return SizedBox(
+                    height: 55,
+                    child: ElevatedButton.icon(
+                      onPressed: controller.openScannedUrl,
+                      icon: const Icon(Icons.open_in_browser),
+                      label: const Text("Open Link"),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 15,),
+
               SizedBox(
                 height: 55,
                 child: ElevatedButton.icon(
-                  onPressed: (){
-                    Get.snackbar(
-                      'Coming Soon',
-                      'copy feature will be available soon.',
+                  onPressed: () async{
+                    final Value = controller.scannedValue.value;
+
+                    if(Value.isEmpty){
+                      return ;
+                    }
+                    await Clipboard.setData(
+                      ClipboardData(text: Value),
+                    );
+
+                    AppSnackbar.show(
+                      title: 'Copied',
+                      message: "QR content copied to clipboard",
                     );
                   },
                   icon: const Icon(Icons.copy),
@@ -68,10 +99,17 @@ class ScanResultScreen extends GetView<ScannerController>{
               SizedBox(
                 height: 55,
                 child: ElevatedButton.icon(
-                  onPressed: (){
-                    Get.snackbar(
-                      "Coming Soon",
-                      "Share feature will be available soon.",
+                  onPressed: () async{
+                    final value = controller.scannedValue.value;
+
+                    if(value.isEmpty){
+                      return ;
+                    }
+
+                    await SharePlus.instance.share(
+                      ShareParams(
+                        text: value,
+                      )
                     );
                   },
                   icon: const Icon(Icons.share),

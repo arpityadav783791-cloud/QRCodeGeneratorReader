@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
 import 'package:qr_code_generator_reader/module/settings/views/setting_screen.dart';
 
 import '../controllers/home_controller.dart';
@@ -82,7 +83,9 @@ class HomeDashboard extends StatelessWidget {
                   "Scan QR Code",
                   style: TextStyle(fontSize: 20),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Get.toNamed(AppRoutes.scanner);
+                },
               ),
             ),
 

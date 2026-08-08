@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
 
 import '../../../app/routes/app_routes.dart';
 import '../controllers/sms_generator_controller.dart';
@@ -19,12 +20,19 @@ class SmsGeneratorScreen extends GetView<SmsGeneratorController> {
       onClear: controller.clear,
 
       onCustomize: () {
-        Get.snackbar("Coming Soon", "QR customization will be available soon.");
+        AppSnackbar.show(
+          title: "Coming Soon", 
+          message: "QR customization will be available soon."
+        );
       },
 
       onContinue: () {
         if (controller.phoneController.text.trim().isEmpty) {
-          Get.snackbar("Empty Phone", "Please enter a phone number.");
+          AppSnackbar.show(
+            title: "Empty Phone", 
+            message: "Please enter a phone number."
+          );
+
           return;
         }
 

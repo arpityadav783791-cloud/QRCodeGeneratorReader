@@ -21,4 +21,5 @@ abstract class AppRoutes {
 
   // Scanner
   static const scanResult = '/scan-result';
+  static const scanner = '/scanner';
 }

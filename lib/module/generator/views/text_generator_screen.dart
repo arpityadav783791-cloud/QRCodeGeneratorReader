@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
+import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
 import 'package:qr_code_generator_reader/module/generator/controllers/text_generator_controller.dart';
 import 'package:qr_code_generator_reader/module/generator/widgets/base_generator_screen.dart';
 import 'package:qr_code_generator_reader/module/generator/widgets/generator_input_field.dart';
@@ -15,16 +16,16 @@ class TextGeneratorScreen extends GetView<TextGeneratorController>{
       qrData: controller.qrData,
       onClear: controller.clear,
       onCustomize: (){
-        Get.snackbar(
-          "Coming Soon",
-          "QR customization will be available soon. ",
+        AppSnackbar.show(
+          title: "Coming Soon",
+          message: "QR customization will be available soon. ",
         );
       },
       onContinue: (){
         if(controller.textController.text.trim().isEmpty){
-          Get.snackbar(
-            "Empty Text",
-            "Please enter some text first.",
+          AppSnackbar.show(
+            title: "Empty Text",
+            message: "Please enter some text first.",
           );
           return;
         }

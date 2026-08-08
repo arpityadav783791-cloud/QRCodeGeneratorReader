@@ -13,6 +13,7 @@ class ScannerBottomBar extends GetView<ScannerController>{
       left: 20,
       right: 20,
       child: Row(
+        spacing: 5,
         children: [
           Expanded(
             child: ElevatedButton.icon(
@@ -37,7 +38,7 @@ class ScannerBottomBar extends GetView<ScannerController>{
                 icon: Icon(
                   controller.isFlashOn.value?Icons.flash_on:Icons.flash_off,
                 ),
-                label: const Text("Flash"),
+                label: Text(controller.isFlashOn.value ? "Turn OFF" : "Turn ON"),
               )
             ),
           )

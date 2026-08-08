@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
 
 import '../../../app/routes/app_routes.dart';
 import '../controllers/url_generator_controller.dart';
@@ -19,12 +20,17 @@ class UrlGeneratorScreen extends GetView<UrlGeneratorController> {
       onClear: controller.clear,
 
       onCustomize: () {
-        Get.snackbar("Coming Soon", "QR customization will be available soon.");
+        AppSnackbar.show(
+          title: "Coming Soon", 
+          message: "QR customization will be available soon.");
       },
 
       onContinue: () {
         if (controller.urlController.text.trim().isEmpty) {
-          Get.snackbar("Empty URL", "Please enter a URL.");
+          AppSnackbar.show(
+            title: "Empty URL", 
+            message: "Please enter a URL."
+          );
           return;
         }
 

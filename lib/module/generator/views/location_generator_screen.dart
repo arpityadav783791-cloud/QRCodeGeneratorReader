@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
+import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
 
 import '../controllers/location_generator_controller.dart';
 import '../widgets/base_generator_screen.dart';
@@ -19,15 +20,18 @@ class LocationGeneratorScreen extends GetView<LocationGeneratorController> {
       onClear: controller.clear,
 
       onCustomize: () {
-        Get.snackbar("Coming Soon", "QR customization will be available soon.");
+        AppSnackbar.show(
+          title: "Coming Soon",
+          message: "QR customization will be available soon.",
+        );
       },
 
       onContinue: () {
         if (controller.latitudeController.text.trim().isEmpty ||
             controller.longitudeController.text.trim().isEmpty) {
-          Get.snackbar(
-            "Missing Coordinates",
-            "Please enter both latitude and longitude.",
+          AppSnackbar.show(
+            title: "Missing Coordinates",
+            message: "Please enter both latitude and longitude.",
           );
           return;
         }
@@ -66,9 +70,9 @@ class LocationGeneratorScreen extends GetView<LocationGeneratorController> {
           width: double.infinity,
           child: OutlinedButton.icon(
             onPressed: () {
-              Get.snackbar(
-                "Coming Soon",
-                "Current location support will be added soon.",
+              AppSnackbar.show(
+                title: "Coming Soon",
+                message: "Current location support will be added soon.",
               );
             },
             icon: const Icon(Icons.my_location),

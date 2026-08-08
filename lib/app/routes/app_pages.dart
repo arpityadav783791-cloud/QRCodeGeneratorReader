@@ -9,7 +9,9 @@ import 'package:qr_code_generator_reader/module/generator/views/qr_preview_scree
 import 'package:qr_code_generator_reader/module/generator/views/text_generator_screen.dart';
 import 'package:qr_code_generator_reader/module/home/bindings/home_binding.dart';
 import 'package:qr_code_generator_reader/module/home/views/home_screen.dart';
+import 'package:qr_code_generator_reader/module/scanner/bindings/scanner_binding.dart';
 import 'package:qr_code_generator_reader/module/scanner/views/scan_result_screen.dart';
+import 'package:qr_code_generator_reader/module/scanner/views/scanner_screen.dart';
 import 'package:qr_code_generator_reader/module/splash/bindings/splash_binding.dart';
 import 'package:qr_code_generator_reader/module/splash/views/splash_screen.dart';
 import 'package:qr_code_generator_reader/module/generator/bindings/url_generator_binding.dart';
@@ -101,6 +103,11 @@ class AppPages {
     GetPage(
       name: AppRoutes.scanResult,
       page: () => const ScanResultScreen(),
+    ),
+    GetPage(
+      name: AppRoutes.scanner,
+      page: () => const ScannerScreen(),
+      binding: ScannerBinding(),
     )
   ];
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
 
 import '../../../app/routes/app_routes.dart';
 import '../controllers/contact_generator_controller.dart';
@@ -19,12 +20,18 @@ class ContactGeneratorScreen extends GetView<ContactGeneratorController> {
       onClear: controller.clear,
 
       onCustomize: () {
-        Get.snackbar("Coming Soon", "QR customization will be available soon.");
+        AppSnackbar.show(
+          title: "Coming Soon",
+          message: "QR customization will be available soon.",
+        );
       },
 
       onContinue: () {
         if (controller.nameController.text.trim().isEmpty) {
-          Get.snackbar("Empty Name", "Please enter contact name.");
+          AppSnackbar.show(
+            title: "Empty Name",
+            message: "Please enter contact name.",
+          );
           return;
         }
 
