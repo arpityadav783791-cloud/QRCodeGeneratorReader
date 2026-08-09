@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
+import 'package:qr_code_generator_reader/module/history/models/history_item.dart';
+import 'package:qr_code_generator_reader/module/history/services/history_service.dart';
 import 'package:qr_code_generator_reader/module/scanner/controllers/scan_result_type.dart';
 
 import '../../../app/routes/app_routes.dart';
@@ -9,6 +11,7 @@ import '../services/scanner_service.dart';
 
 class ScannerController extends GetxController {
   final ScannerService scannerService = Get.find<ScannerService>();
+  final HistoryService historyService = Get.find<HistoryService>();
 
   final scannedValue = ''.obs;
   final detectedTypes = <ScanResultType>[].obs;
@@ -222,5 +225,22 @@ class ScannerController extends GetxController {
         message: "Could not open the map for this location.",
       );
     }
+  }
+  Future<void> saveScanToHistory() async{
+    final value = scannedValue.value;
+
+    if(value.trim().isEmpty){
+      return ;
+    }
+    final types = detectedTypes.map((type) => type.name).join(', ');
+    final item = HistoryItem(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      content: value,
+      type: types,
+      source: 'scanned',
+      createdAt: DateTime.now()
+    );
+
+    await historyService.addHistory(item);
   }
 }
