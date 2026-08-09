@@ -11,7 +11,7 @@ class ScannerController extends GetxController {
   final ScannerService scannerService = Get.find<ScannerService>();
 
   final scannedValue = ''.obs;
-  final resultType = ScanResultType.text.obs;
+  final detectedTypes = <ScanResultType>[].obs;
 
   final isFlashOn = false.obs;
 
@@ -60,7 +60,7 @@ class ScannerController extends GetxController {
 
     // Step 5: Result save karo
     scannedValue.value = value;
-    resultType.value = detectResultType(value);
+    detectedTypes.value = detectResultTypes(value);
 
     // Step 6: Result screen open karo
     Get.toNamed(AppRoutes.scanResult);
@@ -84,7 +84,7 @@ class ScannerController extends GetxController {
     hasScanned.value = true;
 
     scannedValue.value = value;
-    resultType.value = detectResultType(value);
+    detectedTypes.value = detectResultTypes(value);
 
     scannerService.controller.stop();
 
@@ -100,25 +100,49 @@ class ScannerController extends GetxController {
     super.onClose();
   }
 
-  ScanResultType detectResultType(String value){
+  List<ScanResultType> detectResultTypes(String value) {
     final data = value.trim();
-    if(data.startsWith('http://') || data.startsWith('https://')){
-      return ScanResultType.url;
-    }
-    if(data.startsWith('tel:')){
-      return ScanResultType.phone;
-    }
-    if(data.startsWith('mailto:')){
-      return ScanResultType.email;
-    }
-    if(data.startsWith("SMSTO:")||data.startsWith('sms')){
-      return ScanResultType.sms;
-    }
-    if(data.startsWith('geo:')){
-      return ScanResultType.location;
+
+    final types = <ScanResultType>[];
+
+    // URL
+    if (RegExp(r'https?:\/\/[^\s]+', caseSensitive: false).hasMatch(data)) {
+      types.add(ScanResultType.url);
     }
 
-    return ScanResultType.text;
+    // Email
+    if (RegExp(
+      r'[\w.+-]+@[\w-]+\.[\w.-]+',
+      caseSensitive: false,
+    ).hasMatch(data)) {
+      types.add(ScanResultType.email);
+    }
+
+    // SMS
+    if (RegExp(r'(SMSTO:|sms:)', caseSensitive: false).hasMatch(data)) {
+      types.add(ScanResultType.sms);
+    }
+
+    // Location
+    if (RegExp(
+      r'geo:-?\d+(\.\d+)?,-?\d+(\.\d+)?',
+      caseSensitive: false,
+    ).hasMatch(data)) {
+      types.add(ScanResultType.location);
+    }
+
+    // Phone
+    if (data.startsWith('tel:') ||
+        RegExp(r'(?<!\d)\d{10}(?!\d)').hasMatch(data)) {
+      types.add(ScanResultType.phone);
+    }
+
+    // Nothing special detected
+    if (types.isEmpty) {
+      types.add(ScanResultType.text);
+    }
+
+    return types;
   }
 
   Future<void> openScannedUrl()async{
@@ -132,6 +156,70 @@ class ScannerController extends GetxController {
       AppSnackbar.show(
         title: 'Unable to open',
         message: "Counld not open this link",
+      );
+    }
+  }
+
+  Future<void> callScannedPhone()async{
+    final value  = scannedValue.value;
+
+    if(value.isEmpty){
+      return ;
+    }
+    final called = await scannerService.callPhone(value);
+
+    if(!called){
+      AppSnackbar.show(
+        title: "Unable to Call",
+        message: "Could not open the phone dialer.",
+      );
+    }
+  }
+  Future<void> sendScannedEmail() async {
+    final value = scannedValue.value;
+
+    if (value.isEmpty) {
+      return;
+    }
+
+    final sent = await scannerService.sendEmail(value);
+
+    if (!sent) {
+      AppSnackbar.show(
+        title: "Unable to Send Email",
+        message: "Could not open the email application.",
+      );
+    }
+  }
+  Future<void> sendScannedSms() async {
+    final value = scannedValue.value;
+
+    if (value.isEmpty) {
+      return;
+    }
+
+    final sent = await scannerService.sendSms(value);
+
+    if (!sent) {
+      AppSnackbar.show(
+        title: "Unable to Send SMS",
+        message: "Could not open the messaging application.",
+      );
+    }
+  }
+  Future<void> openScannedLocation() async {
+    final value = scannedValue.value;
+
+    if (value.isEmpty) {
+      return;
+    }
+
+    final opened = await scannerService.openLocation(value);
+
+    if (!opened) {
+      AppSnackbar.show(
+        title: "Unable to Open Location",
+        message: "Could not open the map for this location.",
       );
     }
   }

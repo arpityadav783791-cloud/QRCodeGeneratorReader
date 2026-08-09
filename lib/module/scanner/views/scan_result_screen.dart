@@ -53,17 +53,34 @@ class ScanResultScreen extends GetView<ScannerController>{
               ),
               const Spacer(),
 
+              Obx(() {
+                if (!controller.detectedTypes.contains(ScanResultType.url)) {
+                  return const SizedBox.shrink();
+                }
+
+                return SizedBox(
+                  height: 55,
+                  child: ElevatedButton.icon(
+                    onPressed: controller.openScannedUrl,
+                    icon: const Icon(Icons.open_in_browser),
+                    label: const Text("Open Link"),
+                  ),
+                );
+              }),
+
+              const SizedBox(height: 15,),
+
               Obx(
-                () {
-                  if(controller.resultType.value != ScanResultType.url){
+                (){
+                  if (!controller.detectedTypes.contains(ScanResultType.phone)) {
                     return const SizedBox.shrink();
                   }
                   return SizedBox(
                     height: 55,
                     child: ElevatedButton.icon(
-                      onPressed: controller.openScannedUrl,
-                      icon: const Icon(Icons.open_in_browser),
-                      label: const Text("Open Link"),
+                      onPressed: controller.callScannedPhone,
+                      icon: const Icon(Icons.call),
+                      label: const Text("Call"),
                     ),
                   );
                 },
@@ -71,17 +88,71 @@ class ScanResultScreen extends GetView<ScannerController>{
 
               const SizedBox(height: 15,),
 
+              Obx(
+                () {
+                  if (!controller.detectedTypes.contains(ScanResultType.email)) {
+                    return const SizedBox.shrink();
+                  }
+                  return SizedBox(
+                    height: 55,
+                    child: ElevatedButton.icon(
+                      onPressed: controller.sendScannedEmail,
+                      icon: const Icon(Icons.email_outlined),
+                      label: const Text("Send Email"),
+                    ),
+                  );
+                },
+              ),
+
+              const SizedBox(height: 15,),
+
+             Obx(() {
+                if (!controller.detectedTypes.contains(ScanResultType.sms)) {
+                  return const SizedBox.shrink();
+                }
+
+                return SizedBox(
+                  height: 55,
+                  child: ElevatedButton.icon(
+                    onPressed: controller.sendScannedSms,
+                    icon: const Icon(Icons.sms_outlined),
+                    label: const Text("Send SMS"),
+                  ),
+                );
+              }),
+
+              const SizedBox(height: 15),
+
+              Obx(() {
+                if (!controller.detectedTypes.contains(
+                  ScanResultType.location,
+                )) {
+                  return const SizedBox.shrink();
+                }
+
+                return SizedBox(
+                  height: 55,
+                  child: ElevatedButton.icon(
+                    onPressed: controller.openScannedLocation,
+                    icon: const Icon(Icons.location_on_outlined),
+                    label: const Text("Open Maps"),
+                  ),
+                );
+              }),
+
+              const SizedBox(height: 15),
+
               SizedBox(
                 height: 55,
                 child: ElevatedButton.icon(
                   onPressed: () async{
-                    final Value = controller.scannedValue.value;
+                    final value = controller.scannedValue.value;
 
-                    if(Value.isEmpty){
+                    if(value.isEmpty){
                       return ;
                     }
                     await Clipboard.setData(
-                      ClipboardData(text: Value),
+                      ClipboardData(text: value),
                     );
 
                     AppSnackbar.show(
