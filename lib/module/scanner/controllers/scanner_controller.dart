@@ -64,12 +64,13 @@ class ScannerController extends GetxController {
     // Step 5: Result save karo
     scannedValue.value = value;
     detectedTypes.value = detectResultTypes(value);
+    await saveScanToHistory();
 
     // Step 6: Result screen open karo
     Get.toNamed(AppRoutes.scanResult);
   }
 
-  void onDetect(BarcodeCapture capture) {
+  Future<void> onDetect(BarcodeCapture capture) async{
     if (hasScanned.value) {
       return;
     }
@@ -88,6 +89,7 @@ class ScannerController extends GetxController {
 
     scannedValue.value = value;
     detectedTypes.value = detectResultTypes(value);
+    await saveScanToHistory();
 
     scannerService.controller.stop();
 
