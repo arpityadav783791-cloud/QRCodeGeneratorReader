@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_generator_reader/module/history/services/history_service.dart';
 
 class TextGeneratorController extends GetxController{
   final TextEditingController textController = TextEditingController();
+  final HistoryService historyService = Get.find<HistoryService>();
   final RxString qrData = "QR Vault".obs;
   bool get hasText => textController.text.trim().isNotEmpty;
 

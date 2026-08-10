@@ -50,4 +50,32 @@ class HistoryService extends GetxService{
   Future<void> clearHistory() async{
     await _preferences.remove(_historyKey);
   }
+
+  Future<void> addGeneratedHistory({
+    required String content,
+    required String type,
+  }) async {
+    final history = await getHistory();
+
+    final alreadyExists = history.any(
+      (item) =>
+          item.source == 'generated' &&
+          item.type == type &&
+          item.content == content,
+    );
+
+    if (alreadyExists) {
+      return;
+    }
+
+    final item = HistoryItem(
+      id: DateTime.now().microsecondsSinceEpoch.toString(),
+      content: content,
+      type: type,
+      source: 'generated',
+      createdAt: DateTime.now(),
+    );
+
+    await addHistory(item);
+  }
 }

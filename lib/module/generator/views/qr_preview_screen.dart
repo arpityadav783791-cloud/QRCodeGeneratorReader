@@ -7,6 +7,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 class QRPreviewScreen extends GetView<QRPreviewController>{
   const QRPreviewScreen({super.key});
+  static final GlobalKey qrKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -32,20 +33,23 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
           child: Column(
             children: [
               const SizedBox(height: 20,),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(30),
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-
-                child: Obx(
-                  () => QrImageView(
-                    data: controller.qrData.value,
-                    size: 260,
-                    version: QrVersions.auto,
-                  )
+              RepaintBoundary(
+                key: qrKey,
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(30),
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                
+                  child: Obx(
+                    () => QrImageView(
+                      data: controller.qrData.value,
+                      size: 260,
+                      version: QrVersions.auto,
+                    )
+                  ),
                 ),
               ),
               const SizedBox(height: 30,),
@@ -71,7 +75,9 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
                     child: _ActionButton(
                       icon: Icons.download,
                       label: "Download",
-                      onTap: controller.downloadQR,
+                      onTap: (){
+                        controller.downloadQR(qrKey);
+                      },
                     ),
                   ),
                   const SizedBox(width: 12,),

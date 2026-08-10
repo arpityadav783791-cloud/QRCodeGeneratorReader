@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_generator_reader/module/history/services/history_service.dart';
 
 class ContactGeneratorController extends GetxController {
   final nameController = TextEditingController();
@@ -8,10 +9,11 @@ class ContactGeneratorController extends GetxController {
   final companyController = TextEditingController();
   final websiteController = TextEditingController();
   final addressController = TextEditingController();
+  final HistoryService historyService = Get.find<HistoryService>();
 
   final qrData = ''.obs;
 
-  void generateQR() {
+  void generateQR() async{
     qrData.value =
         '''
           BEGIN:VCARD
@@ -24,6 +26,11 @@ class ContactGeneratorController extends GetxController {
           ADR:${addressController.text}
           END:VCARD
         ''';
+
+        await historyService.addGeneratedHistory(
+          content: qrData.value,
+          type: 'contact',
+        );
   }
 
   void clear() {

@@ -21,19 +21,18 @@ class TextGeneratorScreen extends GetView<TextGeneratorController>{
           message: "QR customization will be available soon. ",
         );
       },
-      onContinue: (){
-        if(controller.textController.text.trim().isEmpty){
+      onContinue: () {
+        if (controller.textController.text.trim().isEmpty) {
           AppSnackbar.show(
             title: "Empty Text",
             message: "Please enter some text first.",
           );
           return;
         }
-        Get.toNamed(
-          AppRoutes.qrPreview,
-          arguments: controller.qrData.value,
-        );
+
+        Get.toNamed(AppRoutes.qrPreview, arguments: controller.qrData.value);
       },
+      
       inputFields: [
         GeneratorInputField(
           controller: controller.textController,
