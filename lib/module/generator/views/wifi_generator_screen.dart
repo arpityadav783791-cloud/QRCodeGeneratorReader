@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
 import 'package:qr_code_generator_reader/app/theme/app_colors.dart';
 import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
+import 'package:qr_code_generator_reader/module/history/services/history_service.dart';
 
 import '../controllers/wifi_generator_controller.dart';
 import '../widgets/base_generator_screen.dart';
@@ -27,7 +28,7 @@ class WifiGeneratorScreen extends GetView<WifiGeneratorController> {
         );
       },
 
-      onContinue: () {
+      onContinue: () async{
         if (controller.ssidController.text.trim().isEmpty) {
           AppSnackbar.show(
             title: "Empty SSID", 
@@ -36,6 +37,11 @@ class WifiGeneratorScreen extends GetView<WifiGeneratorController> {
         }
 
         controller.generateQR();
+
+        await Get.find<HistoryService>().addGeneratedHistory(
+          content: controller.qrData.value,
+          type: 'email',
+        );
 
         Get.toNamed(AppRoutes.qrPreview, arguments: controller.qrData.value);
       },

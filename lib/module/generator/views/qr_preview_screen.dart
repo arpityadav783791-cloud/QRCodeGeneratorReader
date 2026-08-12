@@ -85,7 +85,9 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
                     child: _ActionButton(
                       icon: Icons.share,
                       label: "Share",
-                      onTap: controller.shareQR,
+                      onTap: (){
+                        controller.shareQR(qrKey);
+                      },
                     ),
                   ),
                 ],

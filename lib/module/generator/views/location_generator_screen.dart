@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
 import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
+import 'package:qr_code_generator_reader/module/history/services/history_service.dart';
 
 import '../controllers/location_generator_controller.dart';
 import '../widgets/base_generator_screen.dart';
@@ -26,7 +27,7 @@ class LocationGeneratorScreen extends GetView<LocationGeneratorController> {
         );
       },
 
-      onContinue: () {
+      onContinue: () async{
         if (controller.latitudeController.text.trim().isEmpty ||
             controller.longitudeController.text.trim().isEmpty) {
           AppSnackbar.show(
@@ -37,7 +38,10 @@ class LocationGeneratorScreen extends GetView<LocationGeneratorController> {
         }
 
         controller.generateQR();
-
+        await Get.find<HistoryService>().addGeneratedHistory(
+          content: controller.qrData.value,
+          type: 'email',
+        );
         Get.toNamed(AppRoutes.qrPreview, arguments: controller.qrData.value);
       },
 

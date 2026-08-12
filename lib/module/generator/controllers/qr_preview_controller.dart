@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:flutter/rendering.dart';
@@ -8,6 +7,10 @@ import 'package:get/get.dart';
 
 import 'package:share_plus/share_plus.dart';
 class QRPreviewController extends GetxController{
+
+  static const MethodChannel _downloadChannel = MethodChannel(
+    'qr_vault/download',
+  );
   final qrData = ''.obs;
 
   @override
@@ -35,33 +38,52 @@ class QRPreviewController extends GetxController{
         return;
       }
 
+      final bytes = byteData.buffer.asUint8List();
+
       final fileName = generateFileName();
 
-      final directory = Directory('/storage/emulated/0/Download');
+      await _downloadChannel.invokeMethod('saveQrToDownloads', {
+        'fileName': fileName,
+        'bytes': bytes,
+      });
 
-      if (!await directory.exists()) {
-        await directory.create(recursive: true);
-      }
-
-      final file = File('${directory.path}/$fileName');
-
-      await file.writeAsBytes(byteData.buffer.asUint8List());
-
-      Get.snackbar("Downloaded", "Path: ${file.path}");
+      Get.snackbar("Downloaded", "$fileName saved to Downloads");
+    } on PlatformException catch (e) {
+      Get.snackbar("Download Failed", e.message ?? "Could not save QR code.");
     } catch (e) {
       Get.snackbar("Download Failed", "Could not save QR code.");
     }
   }
 
-  void shareQR() async{
-    if(qrData.value.isEmpty){
-      return;
+  Future<void> shareQR(GlobalKey qrKey) async {
+    try {
+      final boundary =
+          qrKey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+
+      if (boundary == null) {
+        return;
+      }
+
+      final image = await boundary.toImage(pixelRatio: 3.0);
+
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+      if (byteData == null) {
+        return;
+      }
+
+      final bytes = byteData.buffer.asUint8List();
+
+      final fileName = generateFileName();
+
+      await SharePlus.instance.share(
+        ShareParams(
+          files: [XFile.fromData(bytes, name: fileName, mimeType: 'image/png')],
+        ),
+      );
+    } catch (e) {
+      Get.snackbar("Share Failed", "Could not share QR code.");
     }
-    await SharePlus.instance.share(
-      ShareParams(
-        text: qrData.value,
-      ),
-    );
   }
 
   void copyQR() async{

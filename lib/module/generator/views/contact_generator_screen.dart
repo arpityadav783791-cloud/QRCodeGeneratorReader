@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
+import 'package:qr_code_generator_reader/module/history/services/history_service.dart';
 
 import '../../../app/routes/app_routes.dart';
 import '../controllers/contact_generator_controller.dart';
@@ -26,7 +27,7 @@ class ContactGeneratorScreen extends GetView<ContactGeneratorController> {
         );
       },
 
-      onContinue: () {
+      onContinue: () async{
         if (controller.nameController.text.trim().isEmpty) {
           AppSnackbar.show(
             title: "Empty Name",
@@ -36,7 +37,10 @@ class ContactGeneratorScreen extends GetView<ContactGeneratorController> {
         }
 
         controller.generateQR();
-
+        await Get.find<HistoryService>().addGeneratedHistory(
+          content: controller.qrData.value,
+          type: 'email',
+        );
         Get.toNamed(AppRoutes.qrPreview, arguments: controller.qrData.value);
       },
 

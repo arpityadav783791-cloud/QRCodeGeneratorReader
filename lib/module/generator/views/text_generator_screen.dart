@@ -21,7 +21,7 @@ class TextGeneratorScreen extends GetView<TextGeneratorController>{
           message: "QR customization will be available soon. ",
         );
       },
-      onContinue: () {
+      onContinue: () async {
         if (controller.textController.text.trim().isEmpty) {
           AppSnackbar.show(
             title: "Empty Text",
@@ -30,6 +30,10 @@ class TextGeneratorScreen extends GetView<TextGeneratorController>{
           return;
         }
 
+        await controller.historyService.addGeneratedHistory(
+          content: controller.qrData.value,
+          type: 'text',
+        );
         Get.toNamed(AppRoutes.qrPreview, arguments: controller.qrData.value);
       },
       
