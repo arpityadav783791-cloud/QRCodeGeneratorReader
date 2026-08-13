@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
 import 'package:qr_code_generator_reader/module/history/controllers/history_controller.dart';
 
 class HistoryScreen extends GetView<HistoryController> {
@@ -59,6 +60,12 @@ class HistoryScreen extends GetView<HistoryController> {
 
                 return Card(
                   child: ListTile(
+                    onTap: (){
+                      Get.toNamed(
+                        AppRoutes.historyDetail,
+                        arguments: item,
+                      );
+                    },
                     leading: Icon(
                       _getIcon(item.type),
                     ),

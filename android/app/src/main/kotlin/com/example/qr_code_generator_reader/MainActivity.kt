@@ -116,10 +116,104 @@ class MainActivity : FlutterActivity() {
                     }
                 }
 
+                "saveQrToGallery" -> {
+
+                    val fileName = call.argument<String>("fileName")
+                    val bytes = call.argument<ByteArray>("bytes")
+
+                    if (fileName == null || bytes == null) {
+                        result.error(
+                            "INVALID_DATA",
+                            "Filename or QR bytes are missing",
+                            null
+                        )
+                        return@setMethodCallHandler
+                    }
+
+                    try {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+
+                            val resolver = contentResolver
+
+                            val values = ContentValues().apply {
+                                put(
+                                    MediaStore.Images.Media.DISPLAY_NAME,
+                                    fileName
+                                )
+
+                                put(
+                                    MediaStore.Images.Media.MIME_TYPE,
+                                    "image/png"
+                                )
+
+                                put(
+                                    MediaStore.Images.Media.RELATIVE_PATH,
+                                    Environment.DIRECTORY_PICTURES + "/QR Vault"
+                                )
+
+                                put(
+                                    MediaStore.Images.Media.IS_PENDING,
+                                    1
+                                )
+                            }
+
+                            val uri = resolver.insert(
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                values
+                            )
+
+                            if (uri == null) {
+                                result.error(
+                                    "CREATE_FAILED",
+                    "Could not create gallery file",
+                                    null
+                                )
+                                return@setMethodCallHandler
+                            }
+
+                            resolver.openOutputStream(uri)?.use { outputStream ->
+                                outputStream.write(bytes)
+                                outputStream.flush()
+                            }
+                
+                            values.clear()
+                
+                            values.put(
+                                MediaStore.Images.Media.IS_PENDING,
+                                0
+                            )
+                
+                            resolver.update(
+                                uri,
+                                values,
+                                null,
+                                null
+                            )
+
+                            result.success(true)
+
+                        } else {
+                            result.error(
+                                "UNSUPPORTED_ANDROID",
+                                "This implementation requires Android 10 or higher.",
+                                null
+                            )
+                        }
+
+                    } catch (e: Exception) {
+                        result.error(
+                            "SAVE_FAILED",
+                            e.message,
+                            null
+                        )
+                    }
+                }
+
                 else -> {
                     result.notImplemented()
                 }
             }
         }
     }
+
 }

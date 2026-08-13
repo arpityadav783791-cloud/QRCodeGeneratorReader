@@ -110,7 +110,9 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
                     child: _ActionButton(
                       icon: Icons.save,
                       label: "Save",
-                      onTap: controller.saveQR,
+                      onTap: (){
+                        controller.saveQR;
+                      },
                     ),
                   ),
                 ],

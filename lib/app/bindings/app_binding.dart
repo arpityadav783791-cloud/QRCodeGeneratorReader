@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/module/history/services/history_service.dart';
+import 'package:qr_code_generator_reader/module/shared/services/qr_action_service.dart';
 
 class AppBinding extends Bindings{
   @override   
@@ -8,5 +9,7 @@ class AppBinding extends Bindings{
       () => HistoryService().init(),
       permanent: true,
     );
+
+    Get.put<QRActionService>(QRActionService(), permanent: true);
   }
 }

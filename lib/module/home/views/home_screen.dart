@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
+import 'package:qr_code_generator_reader/module/history/controllers/history_controller.dart';
 import 'package:qr_code_generator_reader/module/settings/views/setting_screen.dart';
 
 import '../controllers/home_controller.dart';
@@ -26,7 +27,13 @@ class HomeScreen extends GetView<HomeController> {
         body: pages[controller.currentIndex.value],
         bottomNavigationBar: NavigationBar(
           selectedIndex: controller.currentIndex.value,
-          onDestinationSelected: controller.changeTab,
+          onDestinationSelected: (index) {
+            controller.changeTab(index);
+
+            if (index == 2) {
+              Get.find<HistoryController>().loadHistory();
+            }
+          },
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.qr_code_scanner_outlined),
