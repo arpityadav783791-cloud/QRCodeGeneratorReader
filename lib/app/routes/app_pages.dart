@@ -7,8 +7,10 @@ import 'package:qr_code_generator_reader/module/generator/views/generator_screen
 
 import 'package:qr_code_generator_reader/module/generator/views/qr_preview_screen.dart';
 import 'package:qr_code_generator_reader/module/generator/views/text_generator_screen.dart';
+import 'package:qr_code_generator_reader/module/history/bindings/history_binding.dart';
 import 'package:qr_code_generator_reader/module/history/bindings/history_detail_binding.dart';
 import 'package:qr_code_generator_reader/module/history/views/history_detail_screen.dart';
+import 'package:qr_code_generator_reader/module/history/views/history_screen.dart';
 import 'package:qr_code_generator_reader/module/home/bindings/home_binding.dart';
 import 'package:qr_code_generator_reader/module/home/views/home_screen.dart';
 import 'package:qr_code_generator_reader/module/scanner/bindings/scanner_binding.dart';
@@ -115,6 +117,11 @@ class AppPages {
       name: AppRoutes.historyDetail,
       page: () => HistoryDetailScreen(),
       binding: HistoryDetailBinding(),
-    )
+    ),
+    GetPage(
+      name: AppRoutes.history, 
+      page: () => const HistoryScreen(),
+      binding: HistoryBinding(),
+    ),
   ];
 }

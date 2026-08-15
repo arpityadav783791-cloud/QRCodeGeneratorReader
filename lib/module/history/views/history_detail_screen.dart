@@ -28,10 +28,15 @@ class HistoryDetailScreen extends GetView<HistoryDetailController> {
                 ),
                 child: RepaintBoundary(
                   key: qrKey,
-                  child: QrImageView(
-                    data: controller.item.content,
-                    size: 260,
-                    version: QrVersions.auto,
+                  child: Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.all(20),
+                    child: QrImageView(
+                      data: controller.item.content,
+                      size: 260,
+                      version: QrVersions.auto,
+                      backgroundColor: Colors.white,
+                    ),
                   ),
                 ),
               ),
@@ -80,27 +85,42 @@ class HistoryDetailScreen extends GetView<HistoryDetailController> {
 
               const SizedBox(height: 24),
 
-              Row(
+              Column(
                 children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        controller.downloadQR(qrKey);
-                      },
-                      icon: const Icon(Icons.download),
-                      label: const Text('Download'),
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            controller.downloadQR(qrKey);
+                          },
+                          icon: const Icon(Icons.download),
+                          label: const Text('Download'),
+                        ),
+                      ),
+
+                      const SizedBox(width: 12),
+
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            controller.shareQR(qrKey);
+                          },
+                          icon: const Icon(Icons.share),
+                          label: const Text('Share'),
+                        ),
+                      ),
+                    ],
                   ),
 
-                  const SizedBox(width: 12),
+                  const SizedBox(height: 12),
 
-                  Expanded(
+                  SizedBox(
+                    width: double.infinity,
                     child: ElevatedButton.icon(
-                      onPressed: () {
-                        controller.shareQR(qrKey);
-                      },
-                      icon: const Icon(Icons.share),
-                      label: const Text('Share'),
+                      onPressed: controller.copyQR,
+                      icon: const Icon(Icons.copy),
+                      label: const Text('Copy'),
                     ),
                   ),
                 ],

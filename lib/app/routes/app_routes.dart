@@ -23,6 +23,7 @@ abstract class AppRoutes {
   static const scanResult = '/scan-result';
   static const scanner = '/scanner';
 
-  // history
+  // History
+  static const history = '/history';
   static const historyDetail = '/history-detail';
 }

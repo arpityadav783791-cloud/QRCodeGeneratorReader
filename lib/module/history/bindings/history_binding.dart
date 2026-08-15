@@ -11,6 +11,6 @@ class HistoryBinding extends Bindings {
       permanent: true,
     );
     
-    Get.lazyPut<HistoryController>(() => HistoryController());
+    Get.lazyPut<HistoryController>(() => HistoryController(), fenix: true);
   }
 }
