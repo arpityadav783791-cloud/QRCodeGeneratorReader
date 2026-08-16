@@ -1,5 +1,4 @@
 import "package:flutter/material.dart";
-import "package:qr_code_generator_reader/app/theme/app_colors.dart";
 import "package:qr_code_generator_reader/app/theme/app_text_styles.dart";
 
 class GeneratorInputField extends StatelessWidget {
@@ -24,19 +23,26 @@ class GeneratorInputField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return TextField(
       controller: controller,
       onChanged: onChanged,
       keyboardType: keyboardType,
       maxLines: maxLines,
       obscureText: obscureText,
-      style: AppTextStyles.bodyLarge,
+
+      style: AppTextStyles.bodyLarge.copyWith(color: colorScheme.onSurface),
 
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: AppTextStyles.hint,
+
+        hintStyle: AppTextStyles.hint.copyWith(
+          color: colorScheme.onSurfaceVariant,
+        ),
+
         filled: true,
-        fillColor: AppColors.surface,
+        fillColor: colorScheme.surfaceContainerHighest,
 
         suffixIcon: suffixIcon,
 
@@ -57,7 +63,7 @@ class GeneratorInputField extends StatelessWidget {
 
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.primary, width: 2),
+          borderSide: BorderSide(color: colorScheme.primary, width: 2),
         ),
       ),
     );

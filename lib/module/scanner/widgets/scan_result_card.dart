@@ -11,16 +11,17 @@ class ScanResultCard extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
+    final ColorScheme = Theme.of(context).colorScheme;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: ColorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(16),
       ),
       child: SelectableText(
         data.isEmpty?"No QR Code Scanned": data,
-        style: AppTextStyles.bodyLarge,
+        style: AppTextStyles.bodyLarge.copyWith(color: ColorScheme.onSurface),
       ),
     );
   }

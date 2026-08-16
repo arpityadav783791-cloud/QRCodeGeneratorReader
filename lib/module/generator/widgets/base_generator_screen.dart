@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
-import '../../../app/theme/app_colors.dart';
 import '../../../app/theme/app_text_styles.dart';
 
 import 'generator_action_buttons.dart';
@@ -30,12 +29,13 @@ class BaseGeneratorScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
 
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.background,
+        backgroundColor: colorScheme.surface,
 
         title: Text(title, style: AppTextStyles.headingMedium),
 

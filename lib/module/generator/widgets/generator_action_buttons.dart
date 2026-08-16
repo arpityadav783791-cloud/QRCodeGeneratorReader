@@ -15,6 +15,7 @@ class GeneratorActionButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         SizedBox(
@@ -24,13 +25,18 @@ class GeneratorActionButtons extends StatelessWidget {
             onPressed: onCustomize,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.primary,
-              foregroundColor: AppColors.white,
+              foregroundColor: colorScheme.onPrimary,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
             icon: const Icon(Icons.tune),
-            label: Text("Customize", style: AppTextStyles.button),
+            label: Text(
+              "Customize", 
+              style: AppTextStyles.button.copyWith(
+                color: colorScheme.onPrimary,
+              ),
+            ),
           ),
         ),
 
@@ -43,13 +49,16 @@ class GeneratorActionButtons extends StatelessWidget {
             onPressed: onContinue,
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.success,
-              foregroundColor: AppColors.white,
+              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
             icon: const Icon(Icons.qr_code_2),
-            label: Text("Next", style: AppTextStyles.button),
+            label: Text(
+              "Next",
+              style: AppTextStyles.button.copyWith(color: Colors.white),
+            ),
           ),
         ),
       ],

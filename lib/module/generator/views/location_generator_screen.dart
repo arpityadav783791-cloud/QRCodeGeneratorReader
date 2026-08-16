@@ -70,19 +70,26 @@ class LocationGeneratorScreen extends GetView<LocationGeneratorController> {
 
         const SizedBox(height: 16),
 
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton.icon(
-            onPressed: () {
-              AppSnackbar.show(
-                title: "Coming Soon",
-                message: "Current location support will be added soon.",
-              );
-            },
-            icon: const Icon(Icons.my_location),
-            label: const Text("Use Current Location"),
-          ),
-        ),
+        Obx(() {
+          final isLoading = controller.isGettingLocation.value;
+
+          return SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: isLoading ? null : controller.useCurrentLocation,
+              icon: isLoading
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Icon(Icons.my_location),
+              label: Text(
+                isLoading ? 'Getting Location...' : 'Use Current Location',
+              ),
+            ),
+          );
+        }),
       ],
     );
   }

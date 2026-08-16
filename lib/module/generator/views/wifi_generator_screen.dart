@@ -14,6 +14,7 @@ class WifiGeneratorScreen extends GetView<WifiGeneratorController> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return BaseGeneratorScreen(
       title: "WiFi",
 
@@ -66,19 +67,45 @@ class WifiGeneratorScreen extends GetView<WifiGeneratorController> {
 
         Obx(
           () => DropdownButtonFormField<String>(
-            value: controller.selectedSecurity.value,
+            initialValue: controller.selectedSecurity.value,
             decoration: InputDecoration(
               filled: true,
-              fillColor: AppColors.surface,
+              fillColor: colorScheme.surfaceContainerHighest,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(16),
                 borderSide: BorderSide.none,
               ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide(color: colorScheme.primary, width: 2),
+              ),
             ),
-            items: const [
-              DropdownMenuItem(value: "WPA", child: Text("WPA")),
-              DropdownMenuItem(value: "WEP", child: Text("WEP")),
-              DropdownMenuItem(value: "Open", child: Text("Open")),
+            items: [
+              DropdownMenuItem(
+                value: "WPA",
+                child: Text(
+                  "WPA",
+                  style: TextStyle(color: colorScheme.onSurface),
+                ),
+              ),
+              DropdownMenuItem(
+                value: "WEP",
+                child: Text(
+                  "WEP",
+                  style: TextStyle(color: colorScheme.onSurface),
+                ),
+              ),
+              DropdownMenuItem(
+                value: "Open",
+                child: Text(
+                  "Open",
+                  style: TextStyle(color: colorScheme.onSurface),
+                ),
+              ),
             ],
             onChanged: (value) {
               if (value != null) {

@@ -14,14 +14,20 @@ class ScannerScreen extends GetView<ScannerController> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
 
       appBar: AppBar(
-        backgroundColor: AppColors.background,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         centerTitle: true,
-        title: Text("Scan QR Code", style: AppTextStyles.headingMedium),
+        title: Text(
+          "Scan QR Code",
+          style: AppTextStyles.headingMedium.copyWith(
+            color: colorScheme.onSurface,
+          ),
+        ),
       ),
 
       body: SafeArea(

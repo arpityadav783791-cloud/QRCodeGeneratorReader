@@ -15,12 +15,14 @@ class QRPreviewCard extends StatelessWidget{
 
   @override
   Widget build(BuildContext context){
+    final ColorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Text(
           "QR preview",
-          style: AppTextStyles.headingMedium,
-          
+          style: AppTextStyles.headingMedium.copyWith(
+            color: ColorScheme.onSurface,
+          ),
         ),
         const SizedBox(height: 20,),
 
@@ -29,7 +31,7 @@ class QRPreviewCard extends StatelessWidget{
             width: double.infinity,
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: AppColors.white,
+              color: ColorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(20),
             ),
 

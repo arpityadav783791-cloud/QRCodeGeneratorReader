@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/services.dart';
-import 'package:qr_code_generator_reader/app/theme/app_colors.dart';
+
 import 'package:qr_code_generator_reader/app/theme/app_text_styles.dart';
 import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
 import 'package:qr_code_generator_reader/module/scanner/controllers/scan_result_type.dart';
@@ -13,16 +13,19 @@ class ScanResultScreen extends GetView<ScannerController>{
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
 
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.background,
+        backgroundColor: colorScheme.surface,
         centerTitle: true,
         title: Text(
-          "scan Result",
-          style: AppTextStyles.headingMedium,
+          "Scan Result",
+          style: AppTextStyles.headingMedium.copyWith(
+            color: colorScheme.onSurface,
+          ),
         ),
       ),
       body: SafeArea(
@@ -34,7 +37,9 @@ class ScanResultScreen extends GetView<ScannerController>{
             children: [
               Text(
                 "Scanned Content",
-                style: AppTextStyles.headingSmall,
+                style: AppTextStyles.headingSmall.copyWith(
+                  color: colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 20,),
 
@@ -42,12 +47,14 @@ class ScanResultScreen extends GetView<ScannerController>{
                 () => Container(
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
-                    color: AppColors.surface,
+                    color: colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: SelectableText(
                     controller.scannedValue.value.isEmpty?'NO QR Code Scanned':controller.scannedValue.value,
-                    style: AppTextStyles.bodyLarge,
+                    style: AppTextStyles.bodyLarge.copyWith(
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                 ),
               ),

@@ -11,16 +11,19 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: colorScheme.surface,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: AppColors.background,
+        backgroundColor: colorScheme.surface,
         centerTitle: true,
 
         title: Text(
           "QR Preview",
-          style: AppTextStyles.headingMedium,
+          style: AppTextStyles.headingMedium.copyWith(
+            color: colorScheme.onSurface,
+          ),
         ),
       ),
       body: SafeArea(
@@ -39,7 +42,7 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
                   width: double.infinity,
                   padding: const EdgeInsets.all(30),
                   decoration: BoxDecoration(
-                    color: AppColors.white,
+                    color: colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(20),
                   ),
                 
@@ -55,7 +58,9 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
               const SizedBox(height: 30,),
               Text(
                 "Generated QR",
-                style: AppTextStyles.headingMedium,
+                style: AppTextStyles.headingMedium.copyWith(
+                  color: colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 10,),
               Obx(
@@ -64,7 +69,9 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.center,
-                  style: AppTextStyles.bodyMedium,
+                  style: AppTextStyles.bodyMedium.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                  ),
                 ),
               ),
               const SizedBox(height: 35,),
@@ -130,13 +137,18 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
 
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primary,
-                    foregroundColor: AppColors.white,
+                    foregroundColor: colorScheme.onPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
 
-                  child: Text("Generate Another", style: AppTextStyles.button),
+                  child: Text(
+                    "Generate Another",
+                    style: AppTextStyles.button.copyWith(
+                      color: colorScheme.onPrimary,
+                    ),
+                  ),
                 ),
               ),
 
@@ -162,6 +174,7 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme = Theme.of(context).colorScheme;
     return SizedBox(
       height: 58,
 
@@ -169,8 +182,8 @@ class _ActionButton extends StatelessWidget {
         onPressed: onTap,
 
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.surface,
-          foregroundColor: AppColors.white,
+          backgroundColor: ColorScheme.surfaceContainerHighest,
+          foregroundColor: ColorScheme.onSurface,
 
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
@@ -179,7 +192,12 @@ class _ActionButton extends StatelessWidget {
 
         icon: Icon(icon),
 
-        label: Text(label, style: AppTextStyles.button),
+        label: Text(
+          label,
+          style: AppTextStyles.button.copyWith(
+            color: ColorScheme.onSurface
+          ),
+        ),
       ),
     );
   }

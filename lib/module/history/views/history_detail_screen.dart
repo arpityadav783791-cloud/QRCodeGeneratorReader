@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:qr_code_generator_reader/app/theme/app_text_styles.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import '../controllers/history_detail_controller.dart';
 
 class HistoryDetailScreen extends GetView<HistoryDetailController> {
   const HistoryDetailScreen({super.key});
+  
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme = Theme.of(context).colorScheme;
     final GlobalKey qrKey = GlobalKey();
     return Scaffold(
       appBar: AppBar(title: const Text('History Details'), centerTitle: true),
@@ -23,7 +26,7 @@ class HistoryDetailScreen extends GetView<HistoryDetailController> {
               Container(
                 padding: const EdgeInsets.all(30),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ColorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: RepaintBoundary(
@@ -46,11 +49,27 @@ class HistoryDetailScreen extends GetView<HistoryDetailController> {
               // Source + Type
               Row(
                 children: [
-                  Chip(label: Text(controller.sourceLabel)),
+                  Chip(
+                    label: Text(
+                      controller.sourceLabel,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: ColorScheme.onSecondaryContainer,
+                      ),
+                    ),
+                    backgroundColor: ColorScheme.secondaryContainer,
+                  ),
 
                   const SizedBox(width: 8),
 
-                  Chip(label: Text(controller.typeLabel)),
+                  Chip(
+                    label: Text(
+                      controller.typeLabel,
+                      style: AppTextStyles.bodySmall.copyWith(
+                        color: ColorScheme.primary,
+                      ),
+                    ),
+                    backgroundColor: ColorScheme.primaryContainer,
+                  ),
                 ],
               ),
 
@@ -59,14 +78,18 @@ class HistoryDetailScreen extends GetView<HistoryDetailController> {
               // Generated / scanned date
               Text(
                 _formatDate(controller.item.createdAt),
-                style: const TextStyle(fontSize: 14),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: ColorScheme.onSurfaceVariant,
+                ),
               ),
 
               const SizedBox(height: 24),
 
-              const Text(
+              Text(
                 'Content',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                style: AppTextStyles.headingSmall.copyWith(
+                  color: ColorScheme.onSurface,
+                ),
               ),
 
               const SizedBox(height: 10),
@@ -74,12 +97,14 @@ class HistoryDetailScreen extends GetView<HistoryDetailController> {
               Container(
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade800,
+                  color: ColorScheme.surfaceContainerHighest,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: SelectableText(
                   controller.item.content,
-                  style: const TextStyle(fontSize: 16),
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    color: ColorScheme.onSurface,
+                  ),
                 ),
               ),
 
