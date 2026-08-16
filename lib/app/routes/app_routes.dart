@@ -26,4 +26,10 @@ abstract class AppRoutes {
   // History
   static const history = '/history';
   static const historyDetail = '/history-detail';
+
+  // About
+  static const about = '/about';
+
+  // Notifications
+  static const notifications = '/notifications';
 }

@@ -8,21 +8,64 @@ class HistoryController extends GetxController {
   final history = <HistoryItem>[].obs;
   final isLoading = false.obs;
 
-  @override  
-  void onInit(){
+  final searchQuery = ''.obs;
+  final selectedSource = 'all'.obs;
+  final selectedType = 'all'.obs;
+
+  @override
+  void onInit() {
     super.onInit();
     loadHistory();
   }
-  Future<void> loadHistory() async{
+
+  Future<void> loadHistory() async {
     isLoading.value = true;
     history.value = await historyService.getHistory();
     isLoading.value = false;
   }
-  Future<void> deleteItem(String id) async{
+
+  List<HistoryItem> get filteredHistory {
+    final query = searchQuery.value.trim().toLowerCase();
+
+    return history.where((item) {
+      // Search filter
+      final matchesSearch =
+          query.isEmpty || item.content.toLowerCase().contains(query);
+
+      // Source filter
+      final matchesSource =
+          selectedSource.value == 'all' || item.source == selectedSource.value;
+
+      // Type filter
+      final matchesType =
+          selectedType.value == 'all' ||
+          item.type.toLowerCase().contains(selectedType.value.toLowerCase());
+
+      return matchesSearch && matchesSource && matchesType;
+    }).toList();
+  }
+
+  void updateSearch(String value) {
+    searchQuery.value = value;
+  }
+
+  void updateSourceFilter(String value) {
+    selectedSource.value = value;
+  }
+
+  void updateTypeFilter(String value) {
+    selectedType.value = value;
+  }
+
+  void clearFilters() {
+    searchQuery.value = '';
+    selectedSource.value = 'all';
+    selectedType.value = 'all';
+  }
+
+  Future<void> deleteItem(String id) async {
     await historyService.deleteHistory(id);
-    history.removeWhere(
-      (item) => item.id == id,
-    );
+    history.removeWhere((item) => item.id == id);
   }
 
   Future<void> clearAll() async {

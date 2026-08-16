@@ -16,6 +16,10 @@ import 'package:qr_code_generator_reader/module/home/views/home_screen.dart';
 import 'package:qr_code_generator_reader/module/scanner/bindings/scanner_binding.dart';
 import 'package:qr_code_generator_reader/module/scanner/views/scan_result_screen.dart';
 import 'package:qr_code_generator_reader/module/scanner/views/scanner_screen.dart';
+import 'package:qr_code_generator_reader/module/settings/bindings/about_binding.dart';
+import 'package:qr_code_generator_reader/module/settings/bindings/notification_binding.dart';
+import 'package:qr_code_generator_reader/module/settings/views/about_screen.dart';
+import 'package:qr_code_generator_reader/module/settings/views/notification_screen.dart';
 import 'package:qr_code_generator_reader/module/splash/bindings/splash_binding.dart';
 import 'package:qr_code_generator_reader/module/splash/views/splash_screen.dart';
 import 'package:qr_code_generator_reader/module/generator/bindings/url_generator_binding.dart';
@@ -122,6 +126,16 @@ class AppPages {
       name: AppRoutes.history, 
       page: () => const HistoryScreen(),
       binding: HistoryBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.about, 
+      page: () => const AboutScreen(), 
+      binding: AboutBinding(),
+    ),
+    GetPage(
+      name: AppRoutes.notifications,
+      page: () => const NotificationScreen(),
+      binding: NotificationBinding(),
     ),
   ];
 }

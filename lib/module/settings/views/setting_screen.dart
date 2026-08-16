@@ -52,7 +52,7 @@ class SettingsScreen extends GetView<SettingsController> {
                   subtitle: const Text('Manage app notifications'),
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () {
-                    
+                    Get.toNamed(AppRoutes.notifications);
                   },
                 ),
               ],
@@ -97,7 +97,9 @@ class SettingsScreen extends GetView<SettingsController> {
                   title: const Text('About QR Vault'),
                   subtitle: const Text('Learn more about the application'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () {},
+                  onTap: () {
+                    Get.toNamed(AppRoutes.about);
+                  },
                 ),
 
                 const Divider(height: 1),
