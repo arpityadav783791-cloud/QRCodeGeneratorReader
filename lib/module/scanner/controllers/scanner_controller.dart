@@ -5,6 +5,9 @@ import 'package:qr_code_generator_reader/app/utils/app_snackbar.dart';
 import 'package:qr_code_generator_reader/module/history/models/history_item.dart';
 import 'package:qr_code_generator_reader/module/history/services/history_service.dart';
 import 'package:qr_code_generator_reader/module/scanner/controllers/scan_result_type.dart';
+import 'package:qr_code_generator_reader/module/scanner/services/qr_type_detector.dart';
+import 'package:qr_code_generator_reader/module/shared/models/qr_action_type.dart';
+import 'package:qr_code_generator_reader/module/shared/services/qr_action_executor.dart';
 
 import '../../../app/routes/app_routes.dart';
 import '../services/scanner_service.dart';
@@ -63,7 +66,7 @@ class ScannerController extends GetxController {
 
     // Step 5: Result save karo
     scannedValue.value = value;
-    detectedTypes.value = detectResultTypes(value);
+    detectedTypes.value = QRTypeDetector.detect(value);
     await saveScanToHistory();
 
     // Step 6: Result screen open karo
@@ -88,7 +91,7 @@ class ScannerController extends GetxController {
     hasScanned.value = true;
 
     scannedValue.value = value;
-    detectedTypes.value = detectResultTypes(value);
+    detectedTypes.value = QRTypeDetector.detect(value);
     await saveScanToHistory();
 
     scannerService.controller.stop();
@@ -101,85 +104,50 @@ class ScannerController extends GetxController {
   @override
   void onClose() {
     scannerService.dispose();
-
     super.onClose();
   }
+  
 
-  List<ScanResultType> detectResultTypes(String value) {
-    final data = value.trim();
-
-    final types = <ScanResultType>[];
-
-    // URL
-    if (RegExp(r'https?:\/\/[^\s]+', caseSensitive: false).hasMatch(data)) {
-      types.add(ScanResultType.url);
-    }
-
-    // Email
-    if (RegExp(
-      r'[\w.+-]+@[\w-]+\.[\w.-]+',
-      caseSensitive: false,
-    ).hasMatch(data)) {
-      types.add(ScanResultType.email);
-    }
-
-    // SMS
-    if (RegExp(r'(SMSTO:|sms:)', caseSensitive: false).hasMatch(data)) {
-      types.add(ScanResultType.sms);
-    }
-
-    // Location
-    if (RegExp(
-      r'geo:-?\d+(\.\d+)?,-?\d+(\.\d+)?',
-      caseSensitive: false,
-    ).hasMatch(data)) {
-      types.add(ScanResultType.location);
-    }
-
-    // Phone
-    if (data.startsWith('tel:') ||
-        RegExp(r'(?<!\d)\d{10}(?!\d)').hasMatch(data)) {
-      types.add(ScanResultType.phone);
-    }
-
-    // Nothing special detected
-    if (types.isEmpty) {
-      types.add(ScanResultType.text);
-    }
-
-    return types;
-  }
-
-  Future<void> openScannedUrl()async{
+  Future<void> openScannedUrl() async {
     final value = scannedValue.value;
-    if(value.isEmpty){
+
+    if (value.isEmpty) {
       return;
     }
-    final opened = await scannerService.openUrl(value);
 
-    if(!opened){
+    final opened = await QRActionExecutor.execute(
+      action: QRActionType.openLink,
+      content: value,
+    );
+
+    if (!opened) {
       AppSnackbar.show(
-        title: 'Unable to open',
-        message: "Counld not open this link",
+        title: 'Unable to Open',
+        message: 'Could not open this link.',
       );
     }
   }
 
-  Future<void> callScannedPhone()async{
-    final value  = scannedValue.value;
+  Future<void> callScannedPhone() async {
+    final value = scannedValue.value;
 
-    if(value.isEmpty){
-      return ;
+    if (value.isEmpty) {
+      return;
     }
-    final called = await scannerService.callPhone(value);
 
-    if(!called){
+    final called = await QRActionExecutor.execute(
+      action: QRActionType.call,
+      content: value,
+    );
+
+    if (!called) {
       AppSnackbar.show(
-        title: "Unable to Call",
-        message: "Could not open the phone dialer.",
+        title: 'Unable to Call',
+        message: 'Could not open the phone dialer.',
       );
     }
   }
+
   Future<void> sendScannedEmail() async {
     final value = scannedValue.value;
 
@@ -187,15 +155,19 @@ class ScannerController extends GetxController {
       return;
     }
 
-    final sent = await scannerService.sendEmail(value);
+    final sent = await QRActionExecutor.execute(
+      action: QRActionType.sendEmail,
+      content: value,
+    );
 
     if (!sent) {
       AppSnackbar.show(
-        title: "Unable to Send Email",
-        message: "Could not open the email application.",
+        title: 'Unable to Send Email',
+        message: 'Could not open the email application.',
       );
     }
   }
+
   Future<void> sendScannedSms() async {
     final value = scannedValue.value;
 
@@ -203,15 +175,19 @@ class ScannerController extends GetxController {
       return;
     }
 
-    final sent = await scannerService.sendSms(value);
+    final sent = await QRActionExecutor.execute(
+      action: QRActionType.sendSms,
+      content: value,
+    );
 
     if (!sent) {
       AppSnackbar.show(
-        title: "Unable to Send SMS",
-        message: "Could not open the messaging application.",
+        title: 'Unable to Send SMS',
+        message: 'Could not open the messaging application.',
       );
     }
   }
+
   Future<void> openScannedLocation() async {
     final value = scannedValue.value;
 
@@ -219,15 +195,40 @@ class ScannerController extends GetxController {
       return;
     }
 
-    final opened = await scannerService.openLocation(value);
+    final opened = await QRActionExecutor.execute(
+      action: QRActionType.openMaps,
+      content: value,
+    );
 
     if (!opened) {
       AppSnackbar.show(
-        title: "Unable to Open Location",
-        message: "Could not open the map for this location.",
+        title: 'Unable to Open Location',
+        message: 'Could not open the map for this location.',
       );
     }
   }
+
+  // payment method
+  Future<void> payScannedPayment() async {
+    final value = scannedValue.value;
+
+    if (value.isEmpty) {
+      return;
+    }
+
+    final paid = await QRActionExecutor.execute(
+      action: QRActionType.pay,
+      content: value,
+    );
+
+    if (!paid) {
+      AppSnackbar.show(
+        title: 'Unable to Pay',
+        message: 'Could not open a payment application.',
+      );
+    }
+  }
+
   Future<void> saveScanToHistory() async{
     final value = scannedValue.value;
 

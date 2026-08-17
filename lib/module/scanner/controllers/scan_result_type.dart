@@ -5,4 +5,5 @@ enum ScanResultType {
   sms,
   location,
   text,
+  payment,
 }

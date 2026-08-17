@@ -8,12 +8,13 @@ import 'package:qr_code_generator_reader/module/scanner/controllers/scan_result_
 import 'package:qr_code_generator_reader/module/scanner/controllers/scanner_controller.dart';
 import 'package:share_plus/share_plus.dart';
 
-class ScanResultScreen extends GetView<ScannerController>{
+class ScanResultScreen extends GetView<ScannerController> {
   const ScanResultScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       backgroundColor: colorScheme.surface,
 
@@ -28,6 +29,7 @@ class ScanResultScreen extends GetView<ScannerController>{
           ),
         ),
       ),
+
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -41,8 +43,10 @@ class ScanResultScreen extends GetView<ScannerController>{
                   color: colorScheme.onSurface,
                 ),
               ),
-              const SizedBox(height: 20,),
 
+              const SizedBox(height: 20),
+
+              // Scanned QR content
               Obx(
                 () => Container(
                   padding: const EdgeInsets.all(20),
@@ -51,85 +55,106 @@ class ScanResultScreen extends GetView<ScannerController>{
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: SelectableText(
-                    controller.scannedValue.value.isEmpty?'NO QR Code Scanned':controller.scannedValue.value,
+                    controller.scannedValue.value.isEmpty
+                        ? 'NO QR Code Scanned'
+                        : controller.scannedValue.value,
                     style: AppTextStyles.bodyLarge.copyWith(
                       color: colorScheme.onSurface,
                     ),
                   ),
                 ),
               ),
+
               const Spacer(),
 
+              // PAY
               Obx(() {
-                if (!controller.detectedTypes.contains(ScanResultType.url)) {
+                if (!controller.detectedTypes.contains(
+                  ScanResultType.payment,
+                )) {
                   return const SizedBox.shrink();
                 }
 
-                return SizedBox(
-                  height: 55,
-                  child: ElevatedButton.icon(
+                return _ContextActionButton(
+                  icon: Icons.payment,
+                  label: "Pay",
+                  onPressed: controller.payScannedPayment,
+                );
+              }),
+
+              // OPEN LINK
+              Obx(() {
+                if (!controller.detectedTypes.contains(
+                  ScanResultType.url,
+                )) {
+                  return const SizedBox.shrink();
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: _ContextActionButton(
+                    icon: Icons.open_in_browser,
+                    label: "Open Link",
                     onPressed: controller.openScannedUrl,
-                    icon: const Icon(Icons.open_in_browser),
-                    label: const Text("Open Link"),
                   ),
                 );
               }),
 
-              const SizedBox(height: 15,),
-
-              Obx(
-                (){
-                  if (!controller.detectedTypes.contains(ScanResultType.phone)) {
-                    return const SizedBox.shrink();
-                  }
-                  return SizedBox(
-                    height: 55,
-                    child: ElevatedButton.icon(
-                      onPressed: controller.callScannedPhone,
-                      icon: const Icon(Icons.call),
-                      label: const Text("Call"),
-                    ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 15,),
-
-              Obx(
-                () {
-                  if (!controller.detectedTypes.contains(ScanResultType.email)) {
-                    return const SizedBox.shrink();
-                  }
-                  return SizedBox(
-                    height: 55,
-                    child: ElevatedButton.icon(
-                      onPressed: controller.sendScannedEmail,
-                      icon: const Icon(Icons.email_outlined),
-                      label: const Text("Send Email"),
-                    ),
-                  );
-                },
-              ),
-
-              const SizedBox(height: 15,),
-
-             Obx(() {
-                if (!controller.detectedTypes.contains(ScanResultType.sms)) {
+              // CALL
+              Obx(() {
+                if (!controller.detectedTypes.contains(
+                  ScanResultType.phone,
+                )) {
                   return const SizedBox.shrink();
                 }
 
-                return SizedBox(
-                  height: 55,
-                  child: ElevatedButton.icon(
-                    onPressed: controller.sendScannedSms,
-                    icon: const Icon(Icons.sms_outlined),
-                    label: const Text("Send SMS"),
+                return Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: _ContextActionButton(
+                    icon: Icons.call,
+                    label: "Call",
+                    onPressed: controller.callScannedPhone,
                   ),
                 );
               }),
 
-              const SizedBox(height: 15),
+              // EMAIL
+              Obx(() {
+                if (!controller.detectedTypes.contains(
+                  ScanResultType.email,
+                )) {
+                  return const SizedBox.shrink();
+                }
 
+                return Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: _ContextActionButton(
+                    icon: Icons.email_outlined,
+                    label: "Send Email",
+                    onPressed: controller.sendScannedEmail,
+                  ),
+                );
+              }),
+
+              // SMS
+              Obx(() {
+                if (!controller.detectedTypes.contains(
+                  ScanResultType.sms,
+                )) {
+                  return const SizedBox.shrink();
+                }
+
+                return Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: _ContextActionButton(
+                    icon: Icons.sms_outlined,
+                    label: "Send SMS",
+                    onPressed: controller.sendScannedSms,
+                  ),
+                );
+              }),
+
+              // LOCATION
               Obx(() {
                 if (!controller.detectedTypes.contains(
                   ScanResultType.location,
@@ -137,27 +162,29 @@ class ScanResultScreen extends GetView<ScannerController>{
                   return const SizedBox.shrink();
                 }
 
-                return SizedBox(
-                  height: 55,
-                  child: ElevatedButton.icon(
+                return Padding(
+                  padding: const EdgeInsets.only(top: 15),
+                  child: _ContextActionButton(
+                    icon: Icons.location_on_outlined,
+                    label: "Open Maps",
                     onPressed: controller.openScannedLocation,
-                    icon: const Icon(Icons.location_on_outlined),
-                    label: const Text("Open Maps"),
                   ),
                 );
               }),
 
               const SizedBox(height: 15),
 
+              // COPY
               SizedBox(
                 height: 55,
                 child: ElevatedButton.icon(
-                  onPressed: () async{
+                  onPressed: () async {
                     final value = controller.scannedValue.value;
 
-                    if(value.isEmpty){
-                      return ;
+                    if (value.isEmpty) {
+                      return;
                     }
+
                     await Clipboard.setData(
                       ClipboardData(text: value),
                     );
@@ -172,30 +199,70 @@ class ScanResultScreen extends GetView<ScannerController>{
                 ),
               ),
 
-              const SizedBox(height: 15,),
+              const SizedBox(height: 15),
 
+              // SHARE
               SizedBox(
                 height: 55,
                 child: ElevatedButton.icon(
-                  onPressed: () async{
+                  onPressed: () async {
                     final value = controller.scannedValue.value;
 
-                    if(value.isEmpty){
-                      return ;
+                    if (value.isEmpty) {
+                      return;
                     }
 
                     await SharePlus.instance.share(
                       ShareParams(
                         text: value,
-                      )
+                      ),
                     );
                   },
                   icon: const Icon(Icons.share),
                   label: const Text("Share"),
                 ),
               ),
-              const SizedBox(height: 20,),
+
+              const SizedBox(height: 20),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ContextActionButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  const _ContextActionButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return SizedBox(
+      height: 55,
+      child: ElevatedButton.icon(
+        onPressed: onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+        ),
+        icon: Icon(icon),
+        label: Text(
+          label,
+          style: AppTextStyles.button.copyWith(
+            color: colorScheme.onPrimary,
           ),
         ),
       ),
