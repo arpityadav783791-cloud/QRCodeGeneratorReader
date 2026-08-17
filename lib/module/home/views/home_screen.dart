@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
 import 'package:qr_code_generator_reader/module/history/controllers/history_controller.dart';
+import 'package:qr_code_generator_reader/module/history/models/history_item.dart';
 import 'package:qr_code_generator_reader/module/settings/views/setting_screen.dart';
 
 import '../controllers/home_controller.dart';
@@ -9,22 +10,22 @@ import '../controllers/home_controller.dart';
 import '../../generator/views/generator_screen.dart';
 import '../../history/views/history_screen.dart';
 
-
 class HomeScreen extends GetView<HomeController> {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final List<Widget> pages = const [
-      HomeDashboard(),
-      GeneratorScreen(),
-      HistoryScreen(),
-      SettingsScreen(),
+    final pages = [
+      const HomeDashboard(),
+      const GeneratorScreen(),
+      const HistoryScreen(),
+      const SettingsScreen(),
     ];
 
     return Obx(
       () => Scaffold(
         body: pages[controller.currentIndex.value],
+
         bottomNavigationBar: NavigationBar(
           selectedIndex: controller.currentIndex.value,
           onDestinationSelected: (index) {
@@ -62,15 +63,21 @@ class HomeScreen extends GetView<HomeController> {
   }
 }
 
-class HomeDashboard extends StatelessWidget {
+class HomeDashboard extends GetView<HomeController> {
   const HomeDashboard({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
+      backgroundColor: colorScheme.surface,
+
       appBar: AppBar(title: const Text("QR Vault"), centerTitle: true),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
+
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -108,7 +115,7 @@ class HomeDashboard extends StatelessWidget {
                   style: TextStyle(fontSize: 20),
                 ),
                 onPressed: () {
-                  Get.find<HomeController>().changeTab(1);
+                  controller.changeTab(1);
                 },
               ),
             ),
@@ -122,33 +129,105 @@ class HomeDashboard extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            Card(
-              child: SizedBox(
-                width: double.infinity,
-                height: 180,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.history, size: 60),
-                    SizedBox(height: 12),
-                    Text(
-                      "No recent QR activity",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                      ),
+            Obx(() {
+              final recentItems = controller.historyService.history
+                  .take(3)
+                  .toList();
+
+              if (recentItems.isEmpty) {
+                return Card(
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 180,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(Icons.history, size: 60),
+                        SizedBox(height: 12),
+                        Text(
+                          "No recent QR activity",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                        SizedBox(height: 6),
+                        Text(
+                          "Your scanned and generated\n"
+                          "QR codes will appear here.",
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 6),
-                    Text(
-                      "Your scanned and generated\nQR codes will appear here.",
-                      textAlign: TextAlign.center,
+                  ),
+                );
+              }
+
+              return Column(
+                children: [
+                  ...recentItems.map(
+                    (item) => _RecentActivityCard(
+                      item: item,
+                      onTap: () {
+                        Get.toNamed(AppRoutes.historyDetail, arguments: item);
+                      },
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        controller.changeTab(2);
+                      },
+                      child: const Text("View All History"),
+                    ),
+                  ),
+                ],
+              );
+            }),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _RecentActivityCard extends StatelessWidget {
+  final HistoryItem item;
+  final VoidCallback onTap;
+
+  const _RecentActivityCard({required this.item, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+
+      child: ListTile(
+        onTap: onTap,
+
+        leading: CircleAvatar(
+          backgroundColor: colorScheme.primaryContainer,
+          foregroundColor: colorScheme.onPrimaryContainer,
+          child: Icon(
+            item.source == 'scanned' ? Icons.qr_code_scanner : Icons.qr_code,
+          ),
+        ),
+
+        title: Text(item.content, maxLines: 1, overflow: TextOverflow.ellipsis),
+
+        subtitle: Text(
+          '${item.source} • ${item.type}',
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+
+        trailing: const Icon(Icons.chevron_right),
       ),
     );
   }
