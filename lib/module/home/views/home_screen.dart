@@ -23,40 +23,82 @@ class HomeScreen extends GetView<HomeController> {
     ];
 
     return Obx(
-      () => Scaffold(
-        body: pages[controller.currentIndex.value],
-
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: controller.currentIndex.value,
-          onDestinationSelected: (index) {
-            controller.changeTab(index);
-
-            if (index == 2) {
-              Get.find<HistoryController>().loadHistory();
-            }
-          },
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.qr_code_scanner_outlined),
-              selectedIcon: Icon(Icons.qr_code_scanner),
-              label: "Scan",
+      () => PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) async{
+          if(controller.currentIndex.value != 0){
+            controller.changeTab(0);
+            return ;
+          }
+          final shouldExit = await Get.dialog<bool>(
+            AlertDialog(
+              title: const Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('🥺', style: TextStyle(fontSize: 42)),
+                  SizedBox(height: 8),
+                  Text('Leaving already?'),
+                ],
+              ),
+              content: const Text(
+                'Are you sure you want to exit the application?',
+                textAlign: TextAlign.center,
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Get.back(result: false);
+                  },
+                  child: const Text('Stay'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Get.back(result: true);
+                  },
+                  child: const Text('Exit'),
+                ),
+              ],
             ),
-            NavigationDestination(
-              icon: Icon(Icons.qr_code_outlined),
-              selectedIcon: Icon(Icons.qr_code),
-              label: "Generate",
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.history_outlined),
-              selectedIcon: Icon(Icons.history),
-              label: "History",
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.settings_outlined),
-              selectedIcon: Icon(Icons.settings),
-              label: "Settings",
-            ),
-          ],
+          );
+          if(shouldExit ==true){
+            Get.back();
+          }
+        },
+        child: Scaffold(
+          body: pages[controller.currentIndex.value],
+        
+          bottomNavigationBar: NavigationBar(
+            selectedIndex: controller.currentIndex.value,
+            onDestinationSelected: (index) {
+              controller.changeTab(index);
+        
+              if (index == 2) {
+                Get.find<HistoryController>().loadHistory();
+              }
+            },
+            destinations: const [
+              NavigationDestination(
+                icon: Icon(Icons.qr_code_scanner_outlined),
+                selectedIcon: Icon(Icons.qr_code_scanner),
+                label: "Scan",
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.qr_code_outlined),
+                selectedIcon: Icon(Icons.qr_code),
+                label: "Generate",
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.history_outlined),
+                selectedIcon: Icon(Icons.history),
+                label: "History",
+              ),
+              NavigationDestination(
+                icon: Icon(Icons.settings_outlined),
+                selectedIcon: Icon(Icons.settings),
+                label: "Settings",
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -72,12 +114,12 @@ class HomeDashboard extends GetView<HomeController> {
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
-
+    
       appBar: AppBar(title: const Text("QR Vault"), centerTitle: true),
-
+    
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
-
+    
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -85,9 +127,9 @@ class HomeDashboard extends GetView<HomeController> {
               "Quick Actions",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-
+    
             const SizedBox(height: 20),
-
+    
             SizedBox(
               width: double.infinity,
               height: 80,
@@ -102,9 +144,9 @@ class HomeDashboard extends GetView<HomeController> {
                 },
               ),
             ),
-
+    
             const SizedBox(height: 16),
-
+    
             SizedBox(
               width: double.infinity,
               height: 80,
@@ -119,21 +161,21 @@ class HomeDashboard extends GetView<HomeController> {
                 },
               ),
             ),
-
+    
             const SizedBox(height: 32),
-
+    
             const Text(
               "Recent Activity",
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
-
+    
             const SizedBox(height: 20),
-
+    
             Obx(() {
               final recentItems = controller.historyService.history
                   .take(3)
                   .toList();
-
+    
               if (recentItems.isEmpty) {
                 return Card(
                   child: SizedBox(
@@ -162,7 +204,7 @@ class HomeDashboard extends GetView<HomeController> {
                   ),
                 );
               }
-
+    
               return Column(
                 children: [
                   ...recentItems.map(
@@ -173,9 +215,9 @@ class HomeDashboard extends GetView<HomeController> {
                       },
                     ),
                   ),
-
+    
                   const SizedBox(height: 12),
-
+    
                   SizedBox(
                     width: double.infinity,
                     child: OutlinedButton(

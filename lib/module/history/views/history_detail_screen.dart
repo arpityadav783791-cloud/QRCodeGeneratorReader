@@ -27,20 +27,21 @@ class HistoryDetailScreen extends GetView<HistoryDetailController> {
             children: [
               // QR
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(30),
                 decoration: BoxDecoration(
-                  color: ColorScheme.surfaceContainerHighest,
+                  color: Colors.white,
                   borderRadius: BorderRadius.circular(20),
                 ),
-                child: RepaintBoundary(
-                  key: qrKey,
-                  child: Container(
-                    color: Colors.white,
-                    padding: const EdgeInsets.all(20),
+                child: Center(
+                  child: RepaintBoundary(
+                    key: qrKey,
                     child: QrImageView(
                       data: controller.item.content,
-                      size: 260,
+                      size: 240,
                       version: QrVersions.auto,
+                      padding: const EdgeInsets.all(12),
+                      foregroundColor: Colors.black,
                       backgroundColor: Colors.white,
                     ),
                   ),

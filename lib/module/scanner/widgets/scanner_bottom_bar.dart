@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
-import 'package:qr_code_generator_reader/app/theme/app_colors.dart';
 import 'package:qr_code_generator_reader/module/scanner/controllers/scanner_controller.dart';
 
-class ScannerBottomBar extends GetView<ScannerController>{
+class ScannerBottomBar extends GetView<ScannerController> {
   const ScannerBottomBar({super.key});
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Positioned(
       bottom: 25,
       left: 20,
@@ -19,29 +20,33 @@ class ScannerBottomBar extends GetView<ScannerController>{
             child: ElevatedButton.icon(
               onPressed: controller.pickImage,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
               ),
               icon: const Icon(Icons.photo_library),
               label: const Text("Gallery"),
             ),
           ),
 
-          const SizedBox(height: 15,),
+          const SizedBox(width: 15),
 
           Expanded(
             child: Obx(
               () => ElevatedButton.icon(
                 onPressed: controller.toggleFlash,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primary,
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
                 ),
                 icon: Icon(
-                  controller.isFlashOn.value?Icons.flash_on:Icons.flash_off,
+                  controller.isFlashOn.value ? Icons.flash_on : Icons.flash_off,
                 ),
-                label: Text(controller.isFlashOn.value ? "Turn OFF" : "Turn ON"),
-              )
+                label: Text(
+                  controller.isFlashOn.value ? "Turn OFF" : "Turn ON",
+                ),
+              ),
             ),
-          )
+          ),
         ],
       ),
     );

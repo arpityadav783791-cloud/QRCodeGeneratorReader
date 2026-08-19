@@ -36,24 +36,26 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
           child: Column(
             children: [
               const SizedBox(height: 20,),
-              RepaintBoundary(
-                key: qrKey,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(30),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                
-                  child: Obx(
-                    () => QrImageView(
-                      data: controller.qrData.value,
-                      size: 260,
-                      version: QrVersions.auto,
-                      foregroundColor: Colors.black,
-                      backgroundColor: Colors.white,
-                    )
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(30),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: RepaintBoundary(
+                    key: qrKey,
+                    child: Obx(
+                      () => QrImageView(
+                        data: controller.qrData.value,
+                        size: 260,
+                        version: QrVersions.auto,
+                        padding: EdgeInsets.zero,
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.white,
+                      ),
+                    ),
                   ),
                 ),
               ),

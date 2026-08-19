@@ -18,9 +18,39 @@ class QRActionService {
       return null;
     }
 
-    final image = await boundary.toImage(pixelRatio: 3.0);
+    const double pixelRatio = 3.0;
+    const double padding = 30.0;
 
-    final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+    final qrImage = await boundary.toImage(pixelRatio: pixelRatio);
+
+    final paddingPx = padding * pixelRatio;
+
+    final outputWidth = qrImage.width + (paddingPx * 2).toInt();
+    final outputHeight = qrImage.height + (paddingPx * 2).toInt();
+
+    final recorder = ui.PictureRecorder();
+
+    final canvas = ui.Canvas(recorder);
+
+    // White background for the exported QR image.
+    canvas.drawRect(
+      ui.Rect.fromLTWH(0, 0, outputWidth.toDouble(), outputHeight.toDouble()),
+      ui.Paint()..color = const ui.Color(0xFFFFFFFF),
+    );
+
+    // Put the QR exactly in the center.
+    canvas.drawImage(qrImage, ui.Offset(paddingPx, paddingPx), ui.Paint());
+
+    final picture = recorder.endRecording();
+
+    final finalImage = await picture.toImage(outputWidth, outputHeight);
+
+    final byteData = await finalImage.toByteData(
+      format: ui.ImageByteFormat.png,
+    );
+
+    qrImage.dispose();
+    finalImage.dispose();
 
     if (byteData == null) {
       return null;

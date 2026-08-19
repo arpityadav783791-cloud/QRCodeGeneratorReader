@@ -31,7 +31,7 @@ class QRPreviewCard extends StatelessWidget{
             width: double.infinity,
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
-              color: ColorScheme.surfaceContainerHighest,
+              color: Colors.white,
               borderRadius: BorderRadius.circular(20),
             ),
 
@@ -40,6 +40,9 @@ class QRPreviewCard extends StatelessWidget{
                 data: qrData.value.isEmpty?"QR Vault":qrData.value,
                 version: QrVersions.auto,
                 size: 220,
+
+                foregroundColor: Colors.black,
+                backgroundColor: Colors.white,
               ),
             ),
           )
