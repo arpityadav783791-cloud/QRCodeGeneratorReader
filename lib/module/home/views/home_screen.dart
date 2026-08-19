@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:qr_code_generator_reader/app/routes/app_routes.dart';
 import 'package:qr_code_generator_reader/module/history/controllers/history_controller.dart';
@@ -61,7 +62,7 @@ class HomeScreen extends GetView<HomeController> {
             ),
           );
           if(shouldExit ==true){
-            Get.back();
+            await SystemNavigator.pop();
           }
         },
         child: Scaffold(
