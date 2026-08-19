@@ -51,6 +51,8 @@ class QRPreviewScreen extends GetView<QRPreviewController>{
                       data: controller.qrData.value,
                       size: 260,
                       version: QrVersions.auto,
+                      foregroundColor: Colors.black,
+                      backgroundColor: Colors.white,
                     )
                   ),
                 ),
